@@ -26,10 +26,6 @@ export class AuthController {
   @Post('login/verify')
   @ApiOperation({ summary: 'Verify OTP' })
   async otpSignInVerify(@Body() signInDto: OtpVerifyDto) {
-    const isValid = await this.authService.verifyOtp(signInDto);
-    if (!isValid) {
-      throw new BadRequestException('Invalid OTP');
-    }
-    return { message: 'OTP verified successfully' };
+    return this.authService.verifyOtp(signInDto);
   }
 }
