@@ -1,8 +1,10 @@
 import {
   Controller,
   FileTypeValidator,
+  Get,
   ParseFilePipe,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,13 +17,16 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from 'src/decorators';
+import { ProductQueryDto } from './dtos/list-product.dto';
+import { PaginatedResponse } from './types/response.types';
 
 @ApiTags('Products')
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post('')
+  @Post('/bulk')
   @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
@@ -43,5 +48,20 @@ export class ProductController {
     file: Express.Multer.File,
   ) {
     return this.productService.uploadProduct(file);
+  }
+
+  @Public
+  @Get('/')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Product List' })
+  async listProducts(
+    @Query() productQueryDto: ProductQueryDto,
+  ): Promise<PaginatedResponse> {
+    const { search, page, limit } = productQueryDto;
+    return this.productService.listProducts(
+      search,
+      Number(page),
+      Number(limit),
+    );
   }
 }

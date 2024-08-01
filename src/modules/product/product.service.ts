@@ -4,6 +4,7 @@ import {
   validateProductData,
 } from 'src/utils/product.upload.utils';
 import { PrismaService } from '../prisma/prisma.service';
+import { PaginatedResponse } from './types/response.types';
 
 @Injectable()
 export class ProductService {
@@ -22,5 +23,33 @@ export class ProductService {
     }
 
     return { message: 'Products uploaded and validated successfully' };
+  }
+
+  async listProducts(
+    search?: string,
+    page: number = 1,
+    limit: number = 20,
+  ): Promise<PaginatedResponse> {
+    const skip = (page - 1) * limit;
+    const where: any = {};
+
+    if (search !== undefined) {
+      where.name = {
+        contains: search,
+        mode: 'insensitive',
+      };
+    }
+
+    const count = await this.prisma.product.count({ where });
+    const data = await this.prisma.product.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return { data, count };
   }
 }
