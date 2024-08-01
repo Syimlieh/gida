@@ -3,6 +3,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { TokenModule } from './modules/token/token.module';
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { TokenModule } from './modules/token/token.module';
     AuthModule,
     PrismaModule,
     TokenModule,
+    CartModule,
   ],
   controllers: [],
   providers: [],

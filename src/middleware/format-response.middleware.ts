@@ -13,16 +13,6 @@ export class FormatResponseMiddleware implements NestMiddleware {
         parsedData = data;
       }
 
-      // Pagination format
-      if (
-        Array.isArray(parsedData) &&
-        parsedData.length === 1 &&
-        parsedData[0].records &&
-        parsedData[0].pagination
-      ) {
-        parsedData = parsedData[0];
-      }
-
       const formattedResponse = {
         statusCode: res.statusCode,
         success: res.statusCode >= 200 && res.statusCode < 300,

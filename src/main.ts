@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { FormatResponseMiddleware } from './middleware/format-response.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { VersioningType, ValidationPipe } from '@nestjs/common';
+import { AllExceptionsFilter } from './all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -31,6 +32,8 @@ async function bootstrap() {
 
   // format response middleware
   app.use(new FormatResponseMiddleware().use);
+
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   await app.listen(3000);
 }

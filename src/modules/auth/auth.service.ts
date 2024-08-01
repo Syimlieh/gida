@@ -35,11 +35,12 @@ export class AuthService {
       throw new BadRequestException('Invalid OTP');
     }
 
-    await this.prisma.user.delete({
+    await this.prisma.user.update({
       where,
+      data: { otp: null },
     });
 
-    const tokens = await this.tokenService.getTokens(where.mobile);
+    const tokens = await this.tokenService.getTokens(otpRecord);
     return tokens;
   }
 }

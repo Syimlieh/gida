@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Tokens } from './types/tokens.types';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class TokenService {
@@ -17,17 +18,17 @@ export class TokenService {
     this.configService.get<string>('JWT_REFRESH_EXPIRES_IN_SEC'),
   );
 
-  async getTokens(mobile: string): Promise<Tokens> {
+  async getTokens(otpRecord: User): Promise<Tokens> {
     const [access_token, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
-        { mobile },
+        { id: otpRecord.id, mobile: otpRecord.mobile },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
           expiresIn: this.access_expires_in,
         },
       ),
       this.jwtService.signAsync(
-        { mobile },
+        { id: otpRecord.id, mobile: otpRecord.mobile },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
           expiresIn: this.refresh_expires_in,
