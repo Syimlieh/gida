@@ -1,7 +1,11 @@
-import config from '../config/config';
+import getConfig from '../config/config';
 
 export class OtpService {
+  private static config = getConfig();
+
   static generateOtp(): string {
+    const config = this.config;
+
     if (config.defaultOtp) {
       return config.defaultOtp;
     }

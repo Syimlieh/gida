@@ -2,14 +2,19 @@ import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CartItem } from '@prisma/client';
 import { AddToCartDto } from './dtos/add-cart.dto';
-import config from 'src/config/config';
 import { UpdateToCartDto } from './dtos/update-cart.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CartService {
-  private readonly maxQuantity = config.maxQuantity;
+  private readonly maxQuantity: number;
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+  ) {
+    this.maxQuantity = this.configService.get<number>('maxQuantity');
+  }
 
   async addToCart(userId: number, dto: AddToCartDto): Promise<CartItem> {
     const { product, quantity } = dto;

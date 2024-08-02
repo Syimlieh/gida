@@ -20,7 +20,9 @@ import {
 import { Public } from 'src/decorators';
 import { ProductQueryDto } from './dtos/list-product.dto';
 import { PaginatedResponse } from './types/response.types';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
+@UseInterceptors(CacheInterceptor)
 @ApiTags('Products')
 @Controller('product')
 export class ProductController {
@@ -57,6 +59,7 @@ export class ProductController {
   async listProducts(
     @Query() productQueryDto: ProductQueryDto,
   ): Promise<PaginatedResponse> {
+    console.log('controller');
     const { search, page, limit } = productQueryDto;
     return this.productService.listProducts(
       search,
